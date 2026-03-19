@@ -1,5 +1,5 @@
 // server.js
-require('dotenv').config();
+require('dotenv').config({ path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env' });
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -17,11 +17,18 @@ if (!process.env.JWT_SECRET) {
   console.log('⚠️ Using default JWT_SECRET. Please set JWT_SECRET environment variable in production.');
 }
 
-// Allow localhost from any port (3000, 3001, etc.) for local dev
+// Allow localhost for local dev and Netlify for production
 app.use(cors({
   origin: (origin, callback) => {
-    const allowed = !origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-    callback(null, allowed ? origin || true : false);
+    const allowedLocal = !origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    const allowedNetlify = origin && origin.includes('.netlify.app');
+    const allowedRender = origin && origin.includes('.onrender.com');
+    
+    if (allowedLocal || allowedNetlify || allowedRender) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true,
 }));
