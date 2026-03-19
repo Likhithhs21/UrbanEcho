@@ -6,7 +6,7 @@ const Rewards = () => {
   const [activeTab, setActiveTab] = useState('rewards');
   const [civicCard, setCivicCard] = useState(null);
   const [transactions, setTransactions] = useState([]);
-  const [vouchers, setVouchers] = useState([]);
+  //const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newBadges, setNewBadges] = useState([]);

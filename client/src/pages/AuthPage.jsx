@@ -8,7 +8,7 @@ const AuthPage = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  //const navigate = useNavigate(); //
 
   const toggleForm = () => {
     setForm({ username: '', password: '' });

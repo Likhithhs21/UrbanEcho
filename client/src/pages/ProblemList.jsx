@@ -9,7 +9,7 @@ const ProblemList = () => {
   const [error, setError] = useState('');
   const [userVotes, setUserVotes] = useState(new Set()); // Track which problems user has voted on
   const location = useLocation();
-  const navigate = useNavigate();
+  //const navigate = useNavigate(); //
 
   // Check if we should show only user's problems
   const urlParams = new URLSearchParams(location.search);
@@ -164,7 +164,7 @@ const loadProblems = async () => {
 
   useEffect(() => {
     loadProblems();
-  }, []);
+  }, [loadProblems]);
 
   if (loading) return (
     <div className="problemlist-container">
