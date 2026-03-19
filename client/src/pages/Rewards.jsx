@@ -211,54 +211,11 @@ const Rewards = () => {
       showVoucherDetails(voucherCode);
 
       // Refresh data after voucher redemption
-      fetchDashboardData();
-    } catch (err) {
       console.error('❌ Error redeeming voucher:', err);
       alert('Failed to redeem voucher. Please try again.');
     }
-  };  */
-
-  const showVoucherDetails = (voucherCode) => {
-    const voucherWindow = window.open('', '_blank', 'width=400,height=600');
-    voucherWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Voucher Details</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-          }
-          .voucher {
-            background: white;
-            color: #333;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-          }
-          .code {
-            font-family: monospace;
-            font-size: 18px;
-            font-weight: bold;
-            color: #10b981;
-            margin: 10px 0;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="voucher">
-          <h2>🎫 Voucher Redeemed</h2>
-          <p>Your voucher code <span class="code">${voucherCode}</span> has been used!</p>
-        </div>
-      </body>
-      </html>
-    `);
   };
+
   if (loading) {
     return (
       <div className="rewards-page">

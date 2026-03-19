@@ -10,11 +10,7 @@ const Action = () => {
   const [markingDone, setMarkingDone] = useState(new Set());
   const [verifying, setVerifying] = useState(new Set());
 
-  useEffect(() => {
-    loadProblems();
-  }, [loadProblems]);
-
-  const loadProblems = async () => {
+  const loadProblems = React.useCallback(async () => {
     setLoading(true);
     try {
       console.log('🚀 Loading problems for NGO actions...');
@@ -57,7 +53,11 @@ const Action = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadProblems();
+  }, [loadProblems]);
 
   const fetchProblems = async () => {
     try {
