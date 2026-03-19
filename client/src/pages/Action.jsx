@@ -12,7 +12,7 @@ const Action = () => {
 
   useEffect(() => {
     loadProblems();
-  }, []);
+  }, [loadProblems]);
 
   const loadProblems = async () => {
     setLoading(true);

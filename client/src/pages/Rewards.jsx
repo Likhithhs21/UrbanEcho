@@ -32,10 +32,9 @@ const Rewards = () => {
 
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [cardRes, transRes, vouchersRes, rewardsRes] = await Promise.all([
+      const [cardRes, transRes, rewardsRes] = await Promise.all([
         axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/civic-card`, { headers }),
         axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/transactions?limit=10`, { headers }),
-        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/my-codes`, { headers }),
         axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/rewards`)
       ]);
 
@@ -198,7 +197,7 @@ const Rewards = () => {
     `);
   };
 
-  const handleVoucherRedemption = async (voucherCode) => {
+ /* const handleVoucherRedemption = async (voucherCode) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -217,7 +216,7 @@ const Rewards = () => {
       console.error('❌ Error redeeming voucher:', err);
       alert('Failed to redeem voucher. Please try again.');
     }
-  };
+  };  */
 
   const showVoucherDetails = (voucherCode) => {
     const voucherWindow = window.open('', '_blank', 'width=400,height=600');

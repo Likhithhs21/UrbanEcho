@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation} from 'react-router-dom';
 import { fetchProblems, upvoteProblem } from '../utils/api';
 import './ProblemList.css';
 
@@ -57,114 +57,55 @@ const ProblemList = () => {
 
     initializeUserVotes();
   }, [problems]); // Add problems to dependency array
-const loadProblems = async () => {
-    setError('');
-    setLoading(true);
-    try {
-      console.log('🚀 Loading problems from API...');
-      console.log('👤 Current user type:', localStorage.getItem('userType'));
-      console.log('🔐 Current token:', localStorage.getItem('token') ? 'present' : 'missing');
 
-      const currentUserId = localStorage.getItem('userId');
-
-      let problemsData;
-      if (userOnly && currentUserId) {
-        // Fetch only current user's problems
-        console.log('📋 Fetching user-specific problems for userId:', currentUserId);
-        problemsData = await fetchProblems(currentUserId);
-        console.log('✅ User-specific problems loaded:', problemsData?.length || 0);
-      } else {
-        // Fetch all problems (for vote page or general problem list)
-        console.log('📋 Fetching all problems...');
-        problemsData = await fetchProblems();
-        console.log('✅ All problems loaded:', problemsData?.length || 0);
-      }
-
-      let filtered = problemsData ? [...problemsData] : [];
-      console.log('📊 Raw problems data:', filtered.length);
-
-      // Sort problems by highest votes first (especially important for vote page)
-      const sorted = filtered.sort((a, b) => (b.votesCount || 0) - (a.votesCount || 0));
-      console.log('📊 Sorted problems by votes:', sorted.length);
-
-      setProblems(sorted);
-
-      console.log('📊 Problems loaded:', sorted.length);
-      console.log('🔐 Current userId in localStorage:', currentUserId);
-    } catch (err) {
-      console.error('❌ Failed to fetch problems:', err);
-      console.error('❌ Error details:', err.response?.data || err.message);
-      setError('Failed to fetch problems. Please try again later.');
-      setProblems([]); // Ensure problems is empty on error
-    } finally {
-      console.log('🏁 Loading finished, setting loading to false');
-      setLoading(false);
-    }
-  };
-
-  const handleUpvote = async (id) => {
-    console.log('🔥 UPVOTE BUTTON CLICKED for problem ID:', id);
-    console.log('Current userId in localStorage:', localStorage.getItem('userId'));
-    const token = localStorage.getItem('token');
-    const currentUserId = localStorage.getItem('userId');
-
-    if (!token) {
-      console.log('❌ No token found - user not logged in');
-      alert('You must be logged in to vote!');
-      return;
-    }
-
-    if (!currentUserId) {
-      console.log('❌ No userId found - user ID not stored');
-      alert('User ID not found. Please log in again.');
-      return;
-    }
-
-    try {
-      console.log('🚀 Making API call to upvote problem:', id);
-      const result = await upvoteProblem(id);
-      console.log('✅ Upvote API call successful:', result);
-
-      // Update local vote state based on server response
-      if (result.action === 'added' || result.action === 'removed') {
-        setUserVotes(prev => {
-          const newVotes = new Set(prev);
-          if (result.hasVoted) {
-            newVotes.add(id); // User now has voted
-            console.log('➕ Vote added locally');
-          } else {
-            newVotes.delete(id); // User vote removed
-            console.log('🗑️ Vote removed locally');
-          }
-          return newVotes;
-        });
-
-        // Update the specific problem's vote count locally for immediate feedback
-        setProblems(prev => prev.map(problem => {
-          if (problem._id === id) {
-            const newCount = result.votesCount;
-            console.log('📊 Vote count updated:', problem.votesCount, '→', newCount);
-            return {
-              ...problem,
-              votesCount: newCount
-            };
-          }
-          return problem;
-        }));
-
-        console.log('✨ Upvote process completed successfully');
-      }
-
-    } catch (err) {
-      console.error('❌ Upvote failed:', err.response?.data?.error || err.message);
-      console.error('❌ Full error object:', err);
-      alert(err.response?.data?.error || 'Vote failed. Please try again.');
-    }
-  };
-
+  // Move loadProblems inside useEffect to avoid dependency warning
   useEffect(() => {
+    const loadProblems = async () => {
+      setError('');
+      setLoading(true);
+      try {
+        console.log('🚀 Loading problems from API...');
+        console.log('👤 Current user type:', localStorage.getItem('userType'));
+        console.log('🔐 Current token:', localStorage.getItem('token') ? 'present' : 'missing');
+
+        const currentUserId = localStorage.getItem('userId');
+
+        let problemsData;
+        if (userOnly && currentUserId) {
+          // Fetch only current user's problems
+          console.log('📋 Fetching user-specific problems for userId:', currentUserId);
+          problemsData = await fetchProblems(currentUserId);
+          console.log('✅ User-specific problems loaded:', problemsData?.length || 0);
+        } else {
+          // Fetch all problems (for vote page or general problem list)
+          console.log('📋 Fetching all problems...');
+          problemsData = await fetchProblems();
+          console.log('✅ All problems loaded:', problemsData?.length || 0);
+        }
+
+        let filtered = problemsData ? [...problemsData] : [];
+        console.log('📊 Raw problems data:', filtered.length);
+
+        // Sort problems by highest votes first (especially important for vote page)
+        const sorted = filtered.sort((a, b) => (b.votesCount || 0) - (a.votesCount || 0));
+        console.log('📊 Sorted problems by votes:', sorted.length);
+
+        setProblems(sorted);
+
+        console.log('📊 Problems loaded:', sorted.length);
+        console.log('🔐 Current userId in localStorage:', currentUserId);
+      } catch (err) {
+        console.error('❌ Failed to fetch problems:', err);
+        console.error('❌ Error details:', err.response?.data || err.message);
+        setError('Failed to fetch problems. Please try again later.');
+        setProblems([]); // Ensure problems is empty on error
+      } finally {
+        console.log('🏁 Loading finished, setting loading to false');
+        setLoading(false);
+      }
+    };
     loadProblems();
-  }, [loadProblems]);
+  }, [userOnly]);
 
   if (loading) return (
     <div className="problemlist-container">
