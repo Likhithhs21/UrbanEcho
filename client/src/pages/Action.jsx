@@ -57,7 +57,7 @@ const Action = () => {
 
   useEffect(() => {
     loadProblems();
-  }, [loadProblems]);
+  }, []);
 
   const fetchProblems = async () => {
     try {

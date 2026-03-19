@@ -197,25 +197,6 @@ const Rewards = () => {
     `);
   };
 
- /* const handleVoucherRedemption = async (voucherCode) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Authentication required');
-        return;
-      }
-
-      console.log('🎫 REDEEMING VOUCHER:', voucherCode);
-
-      // Show voucher details in a popup
-      showVoucherDetails(voucherCode);
-
-      // Refresh data after voucher redemption
-      console.error('❌ Error redeeming voucher:', err);
-      alert('Failed to redeem voucher. Please try again.');
-    }
-  };
-
   if (loading) {
     return (
       <div className="rewards-page">

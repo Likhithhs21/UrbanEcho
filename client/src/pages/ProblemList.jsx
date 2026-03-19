@@ -9,7 +9,6 @@ const ProblemList = () => {
   const [error, setError] = useState('');
   const [userVotes, setUserVotes] = useState(new Set()); // Track which problems user has voted on
   const location = useLocation();
-  //const navigate = useNavigate(); //
 
   // Check if we should show only user's problems
   const urlParams = new URLSearchParams(location.search);
@@ -105,7 +104,7 @@ const ProblemList = () => {
       }
     };
     loadProblems();
-  }, [userOnly]);
+  }, []);
 
   // Move handleUpvote back to top level
   const handleUpvote = async (id) => {
