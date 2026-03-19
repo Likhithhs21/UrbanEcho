@@ -1,9 +1,0 @@
-[build]
-builder = "nixpacks"
-
-[deploy]
-startCommand = "npm start"
-healthcheckPath = "/"
-
-[environments]
-production = { variables = { NODE_ENV = "production" } }
