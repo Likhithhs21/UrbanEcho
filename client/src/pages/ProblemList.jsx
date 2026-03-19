@@ -107,6 +107,67 @@ const ProblemList = () => {
     loadProblems();
   }, [userOnly]);
 
+  // Move handleUpvote back to top level
+  const handleUpvote = async (id) => {
+    console.log('🔥 UPVOTE BUTTON CLICKED for problem ID:', id);
+    console.log('Current userId in localStorage:', localStorage.getItem('userId'));
+    const token = localStorage.getItem('token');
+    const currentUserId = localStorage.getItem('userId');
+
+    if (!token) {
+      console.log('❌ No token found - user not logged in');
+      alert('You must be logged in to vote!');
+      return;
+    }
+
+    if (!currentUserId) {
+      console.log('❌ No userId found - user ID not stored');
+      alert('User ID not found. Please log in again.');
+      return;
+    }
+
+    try {
+      console.log('🚀 Making API call to upvote problem:', id);
+      const result = await upvoteProblem(id);
+      console.log('✅ Upvote API call successful:', result);
+
+      // Update local vote state based on server response
+      if (result.action === 'added' || result.action === 'removed') {
+        setUserVotes(prev => {
+          const newVotes = new Set(prev);
+          if (result.hasVoted) {
+            newVotes.add(id); // User now has voted
+            console.log('➕ Vote added locally');
+          } else {
+            newVotes.delete(id); // User vote removed
+            console.log('🗑️ Vote removed locally');
+          }
+          return newVotes;
+        });
+
+        // Update the specific problem's vote count locally for immediate feedback
+        setProblems(prev => prev.map(problem => {
+          if (problem._id === id) {
+            const newCount = result.votesCount;
+            console.log('📊 Vote count updated:', problem.votesCount, '→', newCount);
+            return {
+              ...problem,
+              votesCount: newCount
+            };
+          }
+          return problem;
+        }));
+
+        console.log('✨ Upvote process completed successfully');
+      }
+
+    } catch (err) {
+      console.error('❌ Upvote failed:', err.response?.data?.error || err.message);
+      console.error('❌ Full error object:', err);
+      alert(err.response?.data?.error || 'Vote failed. Please try again.');
+    }
+  };
+
   if (loading) return (
     <div className="problemlist-container">
       <div className="loading-message">Loading problems...</div>
